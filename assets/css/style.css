@@ -1,0 +1,34 @@
+body, html {
+    height: 100%;
+    background: "";
+}
+
+#container {
+    margin: 100px 200px 100px 200px;
+    /* margin-right: 200px; */
+    height: 80%;
+    background-color: chocolate;
+}
+
+#header {
+    display: flex;
+    justify-content: center;
+    height: 20%;
+}
+
+#heading-Text {
+    margin-top: 40px;
+    font-size: 45px;
+}
+
+#button-container {
+    display: flex;
+    justify-content: center;
+}
+
+#butt-Start {
+    height: 40px;
+    width: 200px;
+    border-radius: 20px;
+    margin-top: 150px;
+}
