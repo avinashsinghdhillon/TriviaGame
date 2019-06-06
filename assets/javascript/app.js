@@ -33,7 +33,7 @@ const dictionary =
         options: {
             a: "when it was made, in 1701",
             b: "when it rang on July 4, 1776",
-            c: "in the 19th century, when it became a symbol of the abolition of slavery",
+            c: "19th century, as a symbol of the abolition of slavery",
             d: "none of the above"
         },
         correctAnswer : "c"
@@ -79,10 +79,10 @@ const dictionary =
         id: 7,
         question: "How many countries are in the United Kingdom",
         options: {
-            a: "4",
-            b: "3",
-            c: "2",
-            d: "1"
+            a: "4 countries",
+            b: "3 countries",
+            c: "2 countries",
+            d: "1 countries"
         },
         correctAnswer : "a"
     },
@@ -155,12 +155,11 @@ const dictionary =
 let pastQs = new Array();
 
 
-/////////////////
-//function calls
-////////////////
+//////////////////////////////////
+//function calls and event calls
+//////////////////////////////////
 
 //click event function for the "Start" button
-
 $("#butt-Start").click(startGame)
 
 function startGame(){
@@ -171,6 +170,28 @@ function startGame(){
     displayQ(currQuestion)
     var qTimer = setTimeout(showTimer(), 30000);////this not the correct logic
 }
+
+//Hover event that hightlights the selected answer/option
+$("#container").on("mouseenter", ".option", function(){
+    //debugger;
+    $(this).css({
+        "background-color": "lavender"
+    })
+});
+
+$("#container").on("mouseleave", ".option", function(){
+    //debugger;
+    $(this).css({
+        "background-color": "chocolate"
+    })
+});
+
+//Click event function for the selected answer
+$("#container").on("mouseup", ".option", function () {
+    var param = $(this).attr("value");
+    checkAnswer(param);
+});
+
 
 
 //////////////////////
@@ -187,7 +208,6 @@ function layoutGameboard() {
 
 //select a randon question out of the dictionary (that has not been asked)
 function getNextQ(){
-    debugger;
     let foundNewQ = false;
     let newQ;
     while (!foundNewQ) {
@@ -204,17 +224,16 @@ function getNextQ(){
 
 //display the question and options
 function displayQ(q){
-    debugger;
+    //debugger;
     $("#row3").text(q.question);
 
     //show the answer options
     for(letter in q.options){
-        console.log(letter);
         $("#row5").append(
-            `<label>
-            <input type="radio" name="option" value="${letter}">
+            `<label class="option" value="${letter}">
+            <input type="radio" class="option" value="${letter}">
             ${letter} :
-            ${q.question}
+            ${q.options[letter]}
             </label>`
         )
     }
@@ -223,4 +242,9 @@ function displayQ(q){
 //this displays the timer on the gameboard
 function showTimer(){
 
+}
+
+//check answer function
+function checkAnswer(answer){
+    console.log("Answer clicked: " + answer);
 }
