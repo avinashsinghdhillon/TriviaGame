@@ -166,9 +166,10 @@ $("#butt-Start").click(startGame)
 function startGame(){
     //remove the start button
     $("#button-container").remove();
-
+    layoutGameboard();
     let currQuestion = getNextQ();
-    displayQ(currQuestion);
+    displayQ(currQuestion)
+    var qTimer = setTimeout(showTimer(), 30000);////this not the correct logic
 }
 
 
@@ -176,9 +177,12 @@ function startGame(){
 //function definitions
 //////////////////////
 
-//this sets up the structure of the gameboard
+//this sets up the wire structure of the gameboard
 function layoutGameboard() {
-$
+    $("#container").append('<div id="gameboard"></div>');
+    for (var r = 1; r <=5 ; r++){
+        $("#gameboard").append('<div id="row' + r +'" class="row"></div>');
+    }
 }
 
 //select a randon question out of the dictionary (that has not been asked)
@@ -198,7 +202,25 @@ function getNextQ(){
     return newQ;
 }
 
-//this is where we put the 30 second timer
-function displayQ(question){
+//display the question and options
+function displayQ(q){
+    debugger;
+    $("#row3").text(q.question);
+
+    //show the answer options
+    for(letter in q.options){
+        console.log(letter);
+        $("#row5").append(
+            `<label>
+            <input type="radio" name="option" value="${letter}">
+            ${letter} :
+            ${q.question}
+            </label>`
+        )
+    }
+}
+
+//this displays the timer on the gameboard
+function showTimer(){
 
 }
