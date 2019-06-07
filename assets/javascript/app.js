@@ -1,6 +1,4 @@
-
-
-//create an array of objects that contain the questions, options and the correct answer
+//an array of objects that contain the questions, options and the correct answer
 const dictionary = 
 [
     {
@@ -12,9 +10,10 @@ const dictionary =
             c: "Centaurus A",
             d: "Canis Major"
         },
-        correctAnswer : "b"
+        correctAnswer : "b",
+        gifUrl: "https://media.giphy.com/media/BFHj2VF4vi3GE/giphy.gif"
     },
-// #region dictionary
+//#region dictionary
     {
         id: 2,
         question: "What is the collective name for a group of lions?",
@@ -24,7 +23,8 @@ const dictionary =
             c: "Group",
             d: "Pride"
         },
-        correctAnswer : "d"
+        correctAnswer : "d",
+        gifUrl: "https://media.giphy.com/media/3D1TDbiZQZpyG9cqkg/giphy.gif"
     },
 
     {
@@ -36,7 +36,8 @@ const dictionary =
             c: "19th century, as a symbol of the abolition of slavery",
             d: "none of the above"
         },
-        correctAnswer : "c"
+        correctAnswer : "c",
+        gifUrl: "https://media.giphy.com/media/xThtaal99W5J2Y9aZq/giphy.gif"
     },
 
     {
@@ -48,7 +49,8 @@ const dictionary =
             c: "Greenland",
             d: "Iceland"
         },
-        correctAnswer : "c"
+        correctAnswer : "c",
+        gifUrl: "https://media.giphy.com/media/TL19pyp1mqas4hR3Md/giphy.gif"
     },
 
     {
@@ -60,7 +62,8 @@ const dictionary =
             c: "Whitman",
             d: "Shakespeare"
         },
-        correctAnswer : "d"
+        correctAnswer : "d",
+        gifUrl: "https://media.giphy.com/media/l0MYEwUrE0ei2BAGc/giphy.gif"
     },
 
     {
@@ -72,7 +75,8 @@ const dictionary =
             c: "New York",
             d: "California"
         },
-        correctAnswer : "c"
+        correctAnswer : "c",
+        gifUrl: "https://media.giphy.com/media/3gEFiAYiHJJCg/giphy.gif"
     },
 
     {
@@ -84,7 +88,8 @@ const dictionary =
             c: "2 countries",
             d: "1 countries"
         },
-        correctAnswer : "a"
+        correctAnswer : "a",
+        gifUrl: "https://media.giphy.com/media/jxbEDWXurUJ0rrUzpF/giphy.gif"
     },
 
     {
@@ -96,7 +101,8 @@ const dictionary =
             c: "Giraffe",
             d: "Lion"
         },
-        correctAnswer : "c"
+        correctAnswer : "c",
+        gifUrl: "https://media.giphy.com/media/37zSwCqyaPtCg/giphy.gif"
     },
 
     {
@@ -108,7 +114,8 @@ const dictionary =
             c: "Sicily",
             d: "Palermo"
         },
-        correctAnswer : "b"
+        correctAnswer : "b",
+        gifUrl: "https://media.giphy.com/media/3gIRvYEJQFZ2ZuuTIU/giphy.gif"
     },
 
     {
@@ -120,7 +127,8 @@ const dictionary =
             c: "Football",
             d: "Hockey"
         },
-        correctAnswer : "a"
+        correctAnswer : "a",
+        gifUrl: "https://media.giphy.com/media/rXoweykKVzAMo/giphy.gif"
     },
 
     {
@@ -132,7 +140,8 @@ const dictionary =
             c: "Garage",
             d: "Silicon Valley"
         },
-        correctAnswer : "c"
+        correctAnswer : "c",
+        gifUrl: "https://media.giphy.com/media/ABSItT0GoG2v6/giphy.gif"
     },
 
     {
@@ -144,7 +153,8 @@ const dictionary =
             c: "Back to the Future",
             d: "Temple of Doom"
         },
-        correctAnswer : "d"
+        correctAnswer : "d",
+        gifUrl: "https://media.giphy.com/media/Ued7qEpn6eKNq/giphy.gif"
     },
 
 
@@ -152,7 +162,14 @@ const dictionary =
 // #endregion
 
 //Global variables
+let currQuestion;
 let pastQs = new Array();
+let totalQCount = 0;
+let correctAns = 0;
+let incorrectAns = 0;
+let missedQs = 0;
+let mainTimerKey = 0;
+let timeLeft = 0;
 
 
 //////////////////////////////////
@@ -160,18 +177,34 @@ let pastQs = new Array();
 //////////////////////////////////
 
 //click event function for the "Start" button
-$("#butt-Start").click(startGame)
+$("#container").on("click", "#butt-Start", startGame);
+
+//click event function for the reset button
+$("#container").on("click", "#butt-Reset", resetGame);
+
+//Click event function for the selected answer
+$("#container").on("mouseup", ".option", function () {
+    var param = $(this).attr("value");
+    clearInterval(mainTimerKey);//stop the timer
+    checkAnswer(param);
+});
 
 function startGame(){
     //remove the start button
     $("#button-container").remove();
     layoutGameboard();
-    let currQuestion = getNextQ();
-    displayQ(currQuestion)
-    var qTimer = setTimeout(showTimer(), 30000);////this not the correct logic
+    setupNewQuestion();
 }
 
+function setupNewQuestion (){
+    currQuestion = getNextQ();
+    displayQ();
+    setTimer();
+}
+
+///////////////////////////////////////////////////////////
 //Hover event that hightlights the selected answer/option
+/////////////////////////////////////////////////////////////
 $("#container").on("mouseenter", ".option", function(){
     //debugger;
     $(this).css({
@@ -182,17 +215,9 @@ $("#container").on("mouseenter", ".option", function(){
 $("#container").on("mouseleave", ".option", function(){
     //debugger;
     $(this).css({
-        "background-color": "chocolate"
+        "background-color": "rgba(210, 105, 30, 0.849)"
     })
 });
-
-//Click event function for the selected answer
-$("#container").on("mouseup", ".option", function () {
-    var param = $(this).attr("value");
-    checkAnswer(param);
-});
-
-
 
 //////////////////////
 //function definitions
@@ -204,47 +229,129 @@ function layoutGameboard() {
     for (var r = 1; r <=5 ; r++){
         $("#gameboard").append('<div id="row' + r +'" class="row"></div>');
     }
+
+    $("#row2").append('<p id="timer">Time remaining: </p>');
 }
 
 //select a randon question out of the dictionary (that has not been asked)
 function getNextQ(){
+    //debugger;
     let foundNewQ = false;
     let newQ;
     while (!foundNewQ) {
         newQ = dictionary[Math.floor(Math.random() * dictionary.length)];
-        console.log(newQ.id + " " + newQ.question);
         if(pastQs.indexOf(newQ.id) < 0){
             foundNewQ = true;
         }
     }
     //once a new question has been found, add it to Qs asked array
     pastQs.push(newQ.id);
+    totalQCount++;
     return newQ;
 }
 
 //display the question and options
-function displayQ(q){
+function displayQ(){
     //debugger;
-    $("#row3").text(q.question);
+    $("#row3").text(currQuestion.question);
 
+    //clear row 5 of any previous data
+    $("#row5").empty();
     //show the answer options
-    for(letter in q.options){
+    for(letter in currQuestion.options){
         $("#row5").append(
             `<label class="option" value="${letter}">
             <input type="radio" class="option" value="${letter}">
             ${letter} :
-            ${q.options[letter]}
+            ${currQuestion.options[letter]}
             </label>`
         )
     }
 }
 
-//this displays the timer on the gameboard
-function showTimer(){
+//sets the timer on the single question
+function setTimer(){
+    mainTimerKey = setInterval(decrement, 1000);
+    timeLeft = 30;
+    $("#timer").text("Time remaining: " + timeLeft + " seconds");
+}
 
+function decrement(){
+    timeLeft--;
+    $("#timer").text("Time remaining: " + timeLeft + " seconds");
+    if(timeLeft <= 0){
+        clearInterval(mainTimerKey);
+        missedQs++;
+        showCorrectAnswer(0);
+    }
 }
 
 //check answer function
 function checkAnswer(answer){
+    //debugger;
     console.log("Answer clicked: " + answer);
+    if(answer === currQuestion.correctAnswer){
+        correctAns++;
+        showCorrectAnswer(1);
+    }else{
+        incorrectAns++;
+        showCorrectAnswer(-1);
+    }
+}
+
+function showCorrectAnswer(answerResult){
+    $("#row5").empty();
+    ///////////////////////////////////
+    //add gifs to row 5
+    /////////////////////////////////
+    if(answerResult === 1){
+        $("#timer").text("Correct!")
+        $("#row3").text("");
+    }else if (answerResult === -1){
+        $("#timer").text("Nope! Correct answer was...")
+        $("#row3").text(currQuestion.correctAnswer + ": " + 
+            currQuestion.options[currQuestion.correctAnswer]);
+    }else{
+        $("#timer").text("Time's up! Correct answer was...")
+        $("#row3").text(currQuestion.correctAnswer + ": " + 
+            currQuestion.options[currQuestion.correctAnswer]);
+    }
+    $("#row5").append('<div id="image"><img id="gif" src="' + currQuestion.gifUrl + '" /></div>')
+    setTimeout (checkGameOver, 5000);
+}
+
+function checkGameOver(){
+    $("#row5").empty();
+    //debugger;
+    //check if quiz is complete
+    if(totalQCount >= 5){
+        showFinalScore();
+    }else{
+        setupNewQuestion();
+    }
+}
+
+function showFinalScore(){
+    $("#row1").text("Game complete! Here's your scores!")
+    $("#row2").text("Correct answers: " + correctAns);
+    $("#row3").text("Incorrect answers: " + incorrectAns);
+    $("#row4").text("Missed questions: " + missedQs);
+    $("#row5").append('<button id="butt-Reset">Reset</button>');
+}
+
+function resetGame(){
+    $("#butt-Reset").remove();
+    $("#gameboard").remove();
+    $("#container").append('<div id="button-container">');
+    $("#button-container").append('<button id="butt-Start">Start</button>');
+
+    //reset global variables
+    currQuestion = null;
+    pastQs.length = 0;
+    totalQCount = 0;
+    correctAns = 0;
+    incorrectAns = 0;
+    missedQs = 0;
+    mainTimerKey = 0;
+    timeLeft = 0;
 }

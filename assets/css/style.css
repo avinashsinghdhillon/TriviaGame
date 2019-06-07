@@ -1,26 +1,34 @@
 body, html {
     height: 100%;
-    background: "";
     font-size: 20px;
+    color: rgb(78, 5, 5);
     line-height: 40px;
+    font-family: fantasy;
+}
+
+body {
+    background: url("../images/backgroundPic.jpg");
+    background-size: cover;
+
 }
 
 #container {
     margin: 100px 200px 100px 200px;
     /* margin-right: 200px; */
     height: 80%;
-    background-color: chocolate;
+    background-color: rgba(210, 105, 30, 0.849);
 }
 
 #header {
     display: flex;
     justify-content: center;
-    height: 20%;
+    height: 30%;
 }
 
 #heading-Text {
     margin-top: 40px;
     font-size: 45px;
+    color: whitesmoke;
 }
 
 #button-container {
@@ -33,19 +41,27 @@ body, html {
     width: 200px;
     border-radius: 20px;
     margin-top: 150px;
+    font-size: 24px;
+    font-family: fantasy;
+    color: rgb(78, 5, 5);
 }
 
 #gameboard {
     width: 100%;
     display: block;
     justify-content: center;
-    height: 80%;
+    height: 70%;
 }
 
 .row {
     width: 100%;
     height: 40px;
     display: grid;
+    justify-content: center;
+}
+
+#timer {
+    display: block;
     justify-content: center;
 }
 
@@ -56,9 +72,28 @@ body, html {
 }
 
 label {
-    padding-right: 10px;
+    padding-right: 20px;
 }
 
 input {
     visibility: hidden;
+}
+
+#butt-Reset {
+    height: 40px;
+    width: 200px;
+    border-radius: 20px;
+    margin-top: 150px;
+    font-size: 24px;
+    font-family: fantasy;
+    color: rgb(78, 5, 5);
+}
+
+#image {
+    display: grid;
+    justify-content: center;
+}
+
+#gif {
+    max-height: 200px;
 }
